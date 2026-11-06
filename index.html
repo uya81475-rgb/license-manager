@@ -4,12 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#173b5e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="更新管理">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>免許・資格 更新管理</title>
 <style>
 :root{--navy:#173b5e;--blue:#eaf2f9;--bg:#f4f7fb;--ink:#203044;--muted:#718096;--line:#e2e8f0;--green:#16845b;--yellow:#b7791f;--red:#c53030;--white:#fff}
@@ -25,7 +19,7 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weig
 .primary{background:var(--navy);color:white}.secondary{background:#e8eef5;color:var(--navy)}.danger{background:#fff0f0;color:var(--red)}
 .search{display:flex;gap:8px;flex-wrap:wrap}.search input,.search select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:white;font:inherit}
 .panel{padding:18px}.panel h2{font-size:17px;margin:0 0 14px}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-size:12px;font-weight:700;background:#f9fbfd}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:820px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-size:12px;font-weight:700;background:#f9fbfd}
 .pill{display:inline-block;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700;white-space:nowrap}.ok{background:#e5f5ed;color:#16734e}.soon{background:#fff4d6;color:#95600b}.urgent{background:#ffe8dc;color:#b45309}.late{background:#ffe5e5;color:#b42318}.done{background:#e7eef8;color:#365a83}
 .row-actions{display:flex;gap:6px}.row-actions button{padding:6px 9px;font-size:12px}
 .empty{text-align:center;color:var(--muted);padding:34px}
@@ -47,9 +41,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
  <div class="stat"><small>期限切れ</small><strong id="expired">0</strong></div>
 </section>
 <div class="toolbar">
- <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" id="addBtn">＋ 免許・資格を登録</button><button class="secondary" id="installBtn" hidden>ホーム画面に追加</button></div>
+ <button class="primary" id="addBtn">＋ 免許・資格を登録</button>
  <div class="search">
-  <input id="q" placeholder="名称・更新先で検索" aria-label="検索">
+  <input id="q" placeholder="人名・資格名・更新先で検索" aria-label="検索">
   <select id="filter"><option value="all">すべて表示</option><option value="attention">更新期限が近い</option><option value="expired">期限切れ</option><option value="done">更新済み</option></select>
   <button class="secondary" id="exportBtn">データを書き出す</button>
   <button class="secondary" id="importBtn">読み込む</button>
@@ -59,12 +53,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
 <section class="panel">
  <h2>免許・資格一覧 <span id="countLabel" style="font-size:12px;color:#718096;font-weight:400"></span></h2>
  <div class="table-wrap">
- <table><thead><tr><th>免許・資格名</th><th>有効期限</th><th>残り日数</th><th>期限判定</th><th>更新状況</th><th>操作</th></tr></thead>
+ <table><thead><tr><th>対象者</th><th>免許・資格名</th><th>有効期限</th><th>残り日数</th><th>期限判定</th><th>更新状況</th><th>操作</th></tr></thead>
  <tbody id="rows"></tbody></table>
  <div id="empty" class="empty">まだ登録がありません。<br>「免許・資格を登録」から追加してください。</div>
  </div>
 </section>
-<p class="note">データはこのブラウザ内に保存されます。同じ端末・同じブラウザでご利用ください。ブラウザのデータ削除や端末変更に備え、定期的に「データを書き出す」でバックアップしてください。通知はアプリを開いたときに期限を確認して表示します。正式な更新期限・必要書類は各発行元の案内をご確認ください。</p>
+<p class="note">人名ごとに免許・資格を登録できます。新規登録時に複数の名前を改行または「、」で区切って入力すると、同じ免許・資格情報を人数分まとめて登録できます。データはこのブラウザ内に保存されます。同じ端末・同じブラウザでご利用ください。ブラウザのデータ削除や端末変更に備え、定期的に「データを書き出す」でバックアップしてください。通知はアプリを開いたときに期限を確認して表示します。正式な更新期限・必要書類は各発行元の案内をご確認ください。</p>
 </main>
 <footer>免許・資格 更新管理アプリ</footer>
 
@@ -73,6 +67,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
  <form id="itemForm">
   <input type="hidden" id="itemId">
   <div class="fields">
+   <div class="field full"><label for="person">人の名前 *</label><textarea id="person" required maxlength="1000" placeholder="例：山田太郎
+佐藤花子
+鈴木一郎"></textarea><small style="color:#718096">複数人の場合は、1行に1人ずつ入力してください（新規登録時）。</small></div>
    <div class="field full"><label for="name">免許・資格名 *</label><input id="name" required maxlength="100" placeholder="例：運転免許証"></div>
    <div class="field"><label for="issued">交付日・取得日</label><input id="issued" type="date"></div>
    <div class="field"><label for="expiry">有効期限 *</label><input id="expiry" type="date" required></div>
@@ -101,14 +98,14 @@ function render(){
  $('within30').textContent=active.filter(x=>daysLeft(x.expiry)>=0&&daysLeft(x.expiry)<=30).length;
  $('expired').textContent=active.filter(x=>daysLeft(x.expiry)<0).length;
  const q=$('q').value.trim().toLowerCase(), f=$('filter').value;
- let list=items.filter(x=>(x.name+' '+(x.office||'')).toLowerCase().includes(q));
+ let list=items.filter(x=>((x.person||'')+' '+x.name+' '+(x.office||'')).toLowerCase().includes(q));
  if(f==='attention')list=list.filter(x=>x.status!=='更新済み'&&daysLeft(x.expiry)<=90);
  if(f==='expired')list=list.filter(x=>x.status!=='更新済み'&&daysLeft(x.expiry)<0);
  if(f==='done')list=list.filter(x=>x.status==='更新済み');
  list.sort((a,b)=>a.expiry.localeCompare(b.expiry));
  $('countLabel').textContent=`（${list.length}件）`;
  $('rows').innerHTML=list.map(x=>{const [label,cls]=state(x),n=daysLeft(x.expiry);return `<tr>
- <td><strong>${esc(x.name)}</strong><div style="font-size:12px;color:#718096">${esc(x.office||'')}</div></td>
+ <td><strong>${esc(x.person||'未設定')}</strong></td><td><strong>${esc(x.name)}</strong><div style="font-size:12px;color:#718096">${esc(x.office||'')}</div></td>
  <td>${fmt(x.expiry)}</td><td>${x.status==='更新済み'?'—':n<0?`${Math.abs(n)}日超過`:`あと${n}日`}</td>
  <td><span class="pill ${cls}">${label}</span></td><td>${esc(x.status||'未更新')}</td>
  <td><div class="row-actions"><button class="secondary" data-edit="${esc(x.id)}">編集</button><button class="danger" data-del="${esc(x.id)}">削除</button></div></td></tr>`}).join('');
@@ -117,13 +114,14 @@ function render(){
 function openForm(item){
  $('itemForm').reset();$('itemId').value=item?.id||'';
  $('dialogTitle').textContent=item?'免許・資格を編集':'免許・資格を登録';
- if(item){$('name').value=item.name;$('issued').value=item.issued||'';$('expiry').value=item.expiry;$('office').value=item.office||'';$('status').value=item.status||'未更新';$('memo').value=item.memo||''}
+ if(item){$('person').value=item.person||'';$('person').rows=1;$('name').value=item.name;$('issued').value=item.issued||'';$('expiry').value=item.expiry;$('office').value=item.office||'';$('status').value=item.status||'未更新';$('memo').value=item.memo||''}
+ if(!item){$('person').rows=4}
  $('dlg').showModal();
 }
 function closeForm(){$('dlg').close()}
 $('addBtn').onclick=()=>openForm();
 $('closeBtn').onclick=$('cancelBtn').onclick=closeForm;
-$('itemForm').onsubmit=e=>{e.preventDefault();const id=$('itemId').value||crypto.randomUUID();const obj={id,name:$('name').value.trim(),issued:$('issued').value,expiry:$('expiry').value,office:$('office').value.trim(),status:$('status').value,memo:$('memo').value.trim()};const i=items.findIndex(x=>x.id===id);if(i>=0)items[i]=obj;else items.push(obj);save();render();closeForm()};
+$('itemForm').onsubmit=e=>{e.preventDefault();const editId=$('itemId').value;const people=[...new Set($('person').value.split(/[\n,、，]+/).map(v=>v.trim()).filter(Boolean))];if(!people.length){alert('人の名前を入力してください。');return}const base={name:$('name').value.trim(),issued:$('issued').value,expiry:$('expiry').value,office:$('office').value.trim(),status:$('status').value,memo:$('memo').value.trim()};if(editId){const i=items.findIndex(x=>x.id===editId);if(i>=0)items[i]={...items[i],...base,person:people[0]}}else{people.forEach(person=>items.push({id:crypto.randomUUID(),person,...base}))}save();render();closeForm()};
 $('rows').onclick=e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-del]');if(edit){const x=items.find(x=>x.id===edit.dataset.edit);if(x)openForm(x)}if(del){const x=items.find(x=>x.id===del.dataset.del);if(x&&confirm(`「${x.name}」を削除しますか？`)){items=items.filter(y=>y.id!==x.id);save();render()}}};
 $('q').oninput=render;$('filter').onchange=render;
 $('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(items,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='免許資格データ_backup.json';a.click();URL.revokeObjectURL(url)};
@@ -139,30 +137,5 @@ function checkReminders(){
  setTimeout(()=>alert('更新期限のお知らせ\n\n'+msg+(alerts.length>5?'\nほか '+(alerts.length-5)+' 件':'')+'\n\n詳細は一覧をご確認ください。'),300);
 }
 load();render();checkReminders();
-
-let installPrompt = null;
-const installBtn = document.getElementById('installBtn');
-window.addEventListener('beforeinstallprompt', (event) => {
-  event.preventDefault();
-  installPrompt = event;
-  installBtn.hidden = false;
-});
-installBtn.addEventListener('click', async () => {
-  if (!installPrompt) {
-    alert('ブラウザのメニューから「ホーム画面に追加」または「アプリをインストール」を選んでください。');
-    return;
-  }
-  installPrompt.prompt();
-  await installPrompt.userChoice;
-  installPrompt = null;
-  installBtn.hidden = true;
-});
-window.addEventListener('appinstalled', () => {
-  installBtn.hidden = true;
-  alert('ホーム画面への追加が完了しました。');
-});
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
-}
 </script>
 </body></html>
